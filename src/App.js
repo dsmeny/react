@@ -1,9 +1,10 @@
 import React from "react";
+import Content from "./components/Content";
 
 const App = () => {
   return (
-    <div>
-      <h1>Hello Alex</h1>
+    <div className="container">
+      <Content />
     </div>
   );
 };

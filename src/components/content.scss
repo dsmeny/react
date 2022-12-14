@@ -1,0 +1,12 @@
+$IMG_widths: 20rem;
+
+.inner-container {
+  text-align: center;
+  h1 {
+    color: red;
+  }
+
+  img {
+    max-width: $IMG_widths;
+  }
+}

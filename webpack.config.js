@@ -10,11 +10,11 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Custom template",
+      title: "React template",
       template: "./src/index.html",
     }),
   ],
-  devServer: { port: 3000 },
+  devServer: { port: 3000, static: "./dist", hot: true },
   module: {
     rules: [
       {
@@ -29,9 +29,8 @@ module.exports = {
         use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
-        test: /\.(png|jpe?g|svg)/,
-        loader: "url-loader",
-        options: { limit: false },
+        test: /\.(png|jpe?g|svg)$/,
+        type: "asset/resource",
       },
     ],
   },

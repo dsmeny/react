@@ -1,12 +1,15 @@
+const currentTask = process.env.npm_lifecycle_event;
 const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
-module.exports = {
-  mode: "development",
+const config = {
   entry: "./src/index.js",
   output: {
+    filename: "bundle.[hash].js",
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -14,7 +17,14 @@ module.exports = {
       template: "./src/index.html",
     }),
   ],
-  devServer: { port: 3000, static: "./dist", hot: true },
+  mode: "development",
+  devtool: "eval-cheap-source-map",
+  devServer: {
+    port: 3000,
+    static: { directory: path.join(__dirname, "dist") },
+    compress: true,
+    hot: true,
+  },
   module: {
     rules: [
       {
@@ -22,6 +32,15 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
+          options: {
+            presets: [
+              [
+                "@babel/preset-env",
+                { useBuiltIns: "usage", corejs: 3, targets: "defaults" },
+              ],
+              "@babel/preset-react",
+            ],
+          },
         },
       },
       {
@@ -35,3 +54,15 @@ module.exports = {
     ],
   },
 };
+
+if (currentTask == "build") {
+  config.mode = "production";
+  config.module.rules[1].use[0] = MiniCssExtractPlugin.loader;
+  config.plugins.push(
+    new MiniCssExtractPlugin({ filename: "main.[hash].css" }),
+    new CleanWebpackPlugin(),
+    new WebpackManifestPlugin()
+  );
+}
+
+module.exports = config;
